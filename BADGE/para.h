@@ -42,4 +42,3 @@
     int8_t red, blue, green;
   }__attribute__((packed));
   RGBvalueStruct2 rgbvalue2;
-

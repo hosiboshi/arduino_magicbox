@@ -1,4 +1,3 @@
-
 // ============================================
 //  Base design http://simblee.com
 //  Language Reference http://arduino.cc/en/Reference/HomePage
@@ -9,7 +8,7 @@
   #include "SimbleeBLE.h"  
   #include "Wire.h"              // I2C    
   #include "para.h"              // parameter
-  
+  int rss;
 // ============================================
 //  SETUP
 // MOTOR DRIVER PH:D20/EN:D6
@@ -24,7 +23,7 @@ void setup() {
   Serial.begin(9600);
   Wire.begin();                    // SCL:12 SDA:25
   FastLED.addLeds<NEOPIXEL, 11>(leds, 1);     // FastLED setup for RGB LEDs      
-  leds[0] = CRGB(0, 0, 4); FastLED.show();
+  leds[0] = CRGB(0, 4, 0); FastLED.show();
 
   pinMode(13, OUTPUT);             // BUZZ 
   pinMode(15, OUTPUT);             // test LED    
@@ -48,23 +47,36 @@ void setup() {
 // ============================================
 void loop() {
   //SimbleeForMobile.process(); // BLE controller   
-  if(millis() - itime2 > 500) { itime2 = millis(); // 
+  if(millis() - itime2 > 100) { itime2 = millis(); // 
     digitalWrite(15, tgll); tgll = !tgll;
 
     //payloadd.temp = 25;
-    //SimbleeCOM.send((const char*)&payloadd, sizeof(payloadd))
-    rgbvalue1.red = leds[0].red;
+    /*rgbvalue1.red = leds[0].red;
     rgbvalue1.blue = leds[0].blue;
-    rgbvalue1.green = leds[0].green;
+    rgbvalue1.green = leds[0].green;*/
+    rgbvalue1.red = 0;
+    rgbvalue1.blue = 0;
+    rgbvalue1.green = 4;
     SimbleeCOM.send((const char*)&rgbvalue1, sizeof(rgbvalue1));
+    //Serial.println("Send");
 
   }
-  if(got) { 
+  if(rss > -40) { 
      int red = rgbvalue2.red;
      int green = rgbvalue2.green;
      int blue = rgbvalue2.blue;
      leds[0] = CRGB(red, green, blue);
      FastLED.show();
+     Serial.println("near");
+     got = 0;
+  }else{
+    int red = 0;
+     int green = 4;
+     int blue = 0;
+     leds[0] = CRGB(red, green, blue);
+     FastLED.show();
+    Serial.println("far");
+    
   }
 }
 void loop99() { 
@@ -91,6 +103,8 @@ void loop99() {
 void SimbleeCOM_onReceive(unsigned int esn, const char* rgbvalue1, int len, int rssi) { //Serial.print("len:"); Serial.print(len);
   memcpy(&rgbvalue2, rgbvalue1, len); got = 1; // display req flag
   popo = -1*rssi - 35;
+  rss = rssi;
+  Serial.print(rss);
 }
 void SimbleeBLE_onDualModeStart() { // COM data transfer
   if(COMsndReq > 0) { SimbleeCOM.send((const char*)&rgbvalue1, sizeof(rgbvalue1)); COMsndReq = 0; }
@@ -103,5 +117,3 @@ void SimbleeForMobile_onConnect()    { //SimbleeBLE.dualModeEnd();
 }
 void SimbleeForMobile_onDisconnect() { SimbleeBLE.dualModeBegin(); 
 }
-
-
