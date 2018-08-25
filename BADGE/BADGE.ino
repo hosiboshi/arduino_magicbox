@@ -24,7 +24,7 @@ void setup() {
   Serial.begin(9600);
   Wire.begin();                    // SCL:12 SDA:25
   FastLED.addLeds<NEOPIXEL, 11>(leds, 1);     // FastLED setup for RGB LEDs      
-  leds[0] = CRGB(4, 0, 0); FastLED.show();
+  leds[0] = CRGB(0, 0, 4); FastLED.show();
 
   pinMode(13, OUTPUT);             // BUZZ 
   pinMode(15, OUTPUT);             // test LED    
@@ -50,13 +50,15 @@ void loop() {
   //SimbleeForMobile.process(); // BLE controller   
   if(millis() - itime2 > 500) { itime2 = millis(); // 
     digitalWrite(15, tgll); tgll = !tgll;
-    payloadd.temp = 25;
-    SimbleeCOM.send((const char*)&payloadd, sizeof(payloadd));
+    //payloadd.temp = 25;
+    //SimbleeCOM.send((const char*)&payloadd, sizeof(payloadd));
   }
   if(got) { 
-     int temp2 = payloadd2.temp;
-     got = 0;
-     Serial.println(temp2);
+     int red = rgbvalue2.red;
+     int green = rgbvalue2.green;
+     int blue = rgbvalue2.blue;
+     leds[0] = CRGB(red, green, blue);
+     FastLED.show();
   }
 }
 void loop99() { 
@@ -80,12 +82,12 @@ void loop99() {
 // ============================================
 //  DUAL MODE CALL BACK
 // ============================================
-void SimbleeCOM_onReceive(unsigned int esn, const char* payload, int len, int rssi) { //Serial.print("len:"); Serial.print(len);
-  memcpy(&payloadd2, payload, len); got = 1; // display req flag
-  got = 1; popo = -1*rssi - 35;
+void SimbleeCOM_onReceive(unsigned int esn, const char* rgbvalue1, int len, int rssi) { //Serial.print("len:"); Serial.print(len);
+  memcpy(&rgbvalue2, rgbvalue1, len); got = 1; // display req flag
+  popo = -1*rssi - 35;
 }
 void SimbleeBLE_onDualModeStart() { // COM data transfer
-  if(COMsndReq > 0) { SimbleeCOM.send((const char*)&payloadd, sizeof(payloadd)); COMsndReq = 0; }
+  if(COMsndReq > 0) { SimbleeCOM.send((const char*)&rgbvalue1, sizeof(rgbvalue1)); COMsndReq = 0; }
 }
 void SimbleeBLE_onDualModeEnd() {}
 // ============================================
