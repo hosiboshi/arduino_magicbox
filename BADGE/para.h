@@ -24,14 +24,14 @@
 // ============================================
 //  COM
 // ============================================  
-//  struct payloadStructure {  // COM communication packet for send 15byte max
-//     int8_t temp; 
-//  } __attribute__((packed));
-//  payloadStructure payloadd;    
-//  struct payloadStructure2 { // COM communication packet for receive 15byte max
-//     int8_t temp;
-//  } __attribute__((packed));
-//  payloadStructure2 payloadd2;   
+  struct payloadStructure {  // COM communication packet for send 15byte max
+     int8_t temp; 
+  } __attribute__((packed));
+  payloadStructure payloadd;    
+  struct payloadStructure2 { // COM communication packet for receive 15byte max
+     int8_t temp;
+  } __attribute__((packed));
+  payloadStructure2 payloadd2;   
 
   struct RGBvalueStruct1 {
     int8_t red, blue, green;
@@ -42,5 +42,5 @@
     int8_t red, blue, green;
   }__attribute__((packed));
   RGBvalueStruct2 rgbvalue2;
-  }
+  
     
