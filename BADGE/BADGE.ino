@@ -50,8 +50,12 @@ void loop() {
   //SimbleeForMobile.process(); // BLE controller   
   if(millis() - itime2 > 500) { itime2 = millis(); // 
     digitalWrite(15, tgll); tgll = !tgll;
-    payloadd.temp = 25;
-    SimbleeCOM.send((const char*)&payloadd, sizeof(payloadd));
+//    payloadd.temp = 25;
+//    SimbleeCOM.send((const char*)&payloadd, sizeof(payloadd));
+    rgbvalue1.red = leds[0].red;
+    rgbvalue1.blue = leds[0].blue;
+    rgbvalue1.green = leds[0].green;
+    SimbleeCOM.send((const char*)&rgbvalue1, sizeof(rgbvalue1));
   }
   if(got) { 
      int temp2 = payloadd2.temp;
