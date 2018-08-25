@@ -9,7 +9,7 @@
   #include "SimbleeBLE.h"  
   #include "Wire.h"              // I2C    
   #include "para.h"              // parameter
-  
+  int rss;
 // ============================================
 //  SETUP
 // MOTOR DRIVER PH:D20/EN:D6
@@ -48,7 +48,7 @@ void setup() {
 // ============================================
 void loop() {
   //SimbleeForMobile.process(); // BLE controller   
-  if(millis() - itime2 > 1000) { itime2 = millis(); // 
+  if(millis() - itime2 > 100) { itime2 = millis(); // 
     digitalWrite(15, tgll); tgll = !tgll;
 
     //payloadd.temp = 25;
@@ -56,20 +56,28 @@ void loop() {
     rgbvalue1.blue = leds[0].blue;
     rgbvalue1.green = leds[0].green;*/
     rgbvalue1.red = 4;
-    rgbvalue1.blue = 4;
+    rgbvalue1.blue = 0;
     rgbvalue1.green = 0;
     SimbleeCOM.send((const char*)&rgbvalue1, sizeof(rgbvalue1));
-    Serial.println("Send");
+    //Serial.println("Send");
 
   }
-  if(got) { 
+  if(rss > -35) { 
      int red = rgbvalue2.red;
      int green = rgbvalue2.green;
      int blue = rgbvalue2.blue;
      leds[0] = CRGB(red, green, blue);
      FastLED.show();
+     Serial.println("near");
      got = 0;
-     Serial.println();
+  }else{
+    int red = 4;
+     int green = 0;
+     int blue = 0;
+     leds[0] = CRGB(red, green, blue);
+     FastLED.show();
+    Serial.println("far");
+    
   }
 }
 void loop99() { 
@@ -96,7 +104,7 @@ void loop99() {
 void SimbleeCOM_onReceive(unsigned int esn, const char* rgbvalue1, int len, int rssi) { //Serial.print("len:"); Serial.print(len);
   memcpy(&rgbvalue2, rgbvalue1, len); got = 1; // display req flag
   popo = -1*rssi - 35;
-  Serial.println(esn);
+  rss = rssi;
 }
 void SimbleeBLE_onDualModeStart() { // COM data transfer
   if(COMsndReq > 0) { SimbleeCOM.send((const char*)&rgbvalue1, sizeof(rgbvalue1)); COMsndReq = 0; }
@@ -109,3 +117,4 @@ void SimbleeForMobile_onConnect()    { //SimbleeBLE.dualModeEnd();
 }
 void SimbleeForMobile_onDisconnect() { SimbleeBLE.dualModeBegin(); 
 }
+
