@@ -21,26 +21,16 @@
   int SELECT  = 0;
   int SELECT1 = 0;
   int ss[10]; int sn = 0;
+  int dist;
 // ============================================
 //  COM
 // ============================================  
-//  struct payloadStructure {  // COM communication packet for send 15byte max
-//     int8_t temp; 
-//  } __attribute__((packed));
-//  payloadStructure payloadd;    
-//  struct payloadStructure2 { // COM communication packet for receive 15byte max
-//     int8_t temp;
-//  } __attribute__((packed));
-//  payloadStructure2 payloadd2;   
-
-  struct RGBvalueStruct1 {
-    int8_t red, blue, green;
-  }__attribute__((packed));
-  RGBvalueStruct1 rgbvalue1;
-
-  struct RGBvalueStruct2 {
-    int8_t red, blue, green;
-  }__attribute__((packed));
-  RGBvalueStruct2 rgbvalue2;
-  }
+  struct payloadStructure {  // COM communication packet for send 15byte max
+     int4_t dist;
+  } __attribute__((packed));
+  payloadStructure payloadd;    
+  struct payloadStructure2 { // COM communication packet for receive 15byte max
+     int4_t dist;
+  } __attribute__((packed));
+  payloadStructure2 payloadd2;   
     
